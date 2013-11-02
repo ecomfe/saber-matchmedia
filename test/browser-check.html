@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>Browser API Check</title>
+    <style>
+    body { font-family: monospace; }
+    .item { padding: .5em; border-top: 1px dotted #CCC; }
+    b, i { display:inline-block; float: right; }
+    b { color: green; font-weight: 400; }
+    i { color: red; }
+    </style>
+</head>
+<body>
+    <h2>Browser API Check</h2>
+    <div id="output"></div>
+    <script>
+    var output = document.getElementById('output');
+    var style = document.createElement('style');
+    var m = window.styleMedia || window.media;
+
+    var data = [
+        {
+            name: 'window.styleMedia',
+            result: 'styleMedia' in window
+        },
+        {
+            name: 'window.media',
+            result: 'media' in window
+        },
+        {
+            name: 'm.matchMedium',
+            result: 'matchMedium' in m
+        },
+        {
+            name: 'window.getComputedStyle',
+            result: 'getComputedStyle' in window
+        },
+        {
+            name: 'style.currentStyle',
+            result: 'currentStyle' in style
+        },
+        {
+            name: 'style.textContent',
+            result: 'textContent' in style
+        },
+        {
+            name: 'style.styleSheet',
+            result: 'styleSheet' in style
+        }
+    ];
+
+    var html = [];
+    data.forEach(function( item ) {
+        var itemHtml = '<div class="item">' + item.name;
+        if ( item.result ) {
+            itemHtml += '<b>pass</b>';
+        } else {
+            itemHtml += '<i>fail</i>';
+        }
+        itemHtml += '</div>';
+
+        html.push( itemHtml );
+    });
+    output.innerHTML = html.join('');
+    </script>
+</body>
+</html>
