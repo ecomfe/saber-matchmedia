@@ -15,7 +15,16 @@
 
 define(function( require ) {
 
-    var matchMedia = window.matchMedia || (function( win ) {
+    // native matchMedia is buggy in MIUI (Android 4.1.2 version) browsers,
+    // except Androd Chrome.
+    var isAndroid = navigator.userAgent.indexOf( 'Android' ) > 0;
+    var isChrome = /Chrome\/[0-9]+/.test( navigator.userAgent );
+
+    if ( window.matchMedia && !( isAndroid && !isChrome ) ) {
+        return window.matchMedia;
+    }
+
+    var matchMedia = (function( win ) {
         var _doc = win.document;
         var _viewport = _doc.documentElement;
         var _queries = [];

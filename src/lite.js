@@ -15,12 +15,21 @@
 
 define(function() {
 
+    // native matchMedia is buggy in MIUI (Android 4.1.2 version) browsers,
+    // except Androd Chrome.
+    var isAndroid = navigator.userAgent.indexOf( 'Android' ) > 0;
+    var isChrome = /Chrome\/[0-9]+/.test( navigator.userAgent );
+
+    if ( window.matchMedia && !( isAndroid && !isChrome ) ) {
+        return window.matchMedia;
+    }
+
     /**
      * MatchMedia
      * 
      * @type {Function}
      */
-    var matchMedia = window.matchMedia || (function() {
+    var matchMedia = (function() {
         
         // For browsers that support matchMedium api
         // Android 2.3 use `window.media`
