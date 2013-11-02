@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+        <title>matchmedia lite version</title>
+        <script src="http://s1.bdstatic.com/r/www/cache/ecom/esl/1-6-6/esl.js"></script>
+    </head>
+    <body>
+        <script>
+        require.config({
+            packages: [
+                {
+                    name: 'saber-matchmedia',
+                    location: '../src',
+                    main: 'main'
+                }
+            ]
+        });
+        require( [ 'saber-matchmedia/lite' ], function( matchMedia ) {
+            var mql = matchMedia( 'screen and (orientation: portrait)' );
+
+            function orientationHandler( matches ) {
+                document.body.style.background = matches ? 'red' : 'blue';
+            }
+
+            orientationHandler( mql.matches );
+        });
+        </script>
+    </body>
+</html>
