@@ -20,7 +20,7 @@
 var matchMedia = require( 'saber-matchmedia' );
 ```
 
-*完整版* 来自 [`weblinc/media-match`](https://github.com/weblinc/media-match)，性能比 `Native matchMedia` 高，远超 `paulirish/matchMedia.js`（[jsperf](http://jsperf.com/matchmedia/11)）。
+*完整版* 来自 [`weblinc/media-match`](https://github.com/weblinc/media-match)，性能 ( *via [jsperf](http://jsperf.com/matchmedia/11)* ) 比 `Native matchMedia` 高，远超 `paulirish/matchMedia.js`。
 
 #### 简化版
 
