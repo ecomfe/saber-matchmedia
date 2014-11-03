@@ -2,13 +2,15 @@
 
 移动端 [`matchMedia`](http://dev.w3.org/csswg/cssom-view/#dom-window-matchmedia) 支持。
 
-## Usage
-
-### 引入模块
+## Installation
 
 通过 `edp` 引入模块：
 
     edp import saber-matchmedia
+
+## Usage
+
+### 引入模块
 
 该模块有 **两个版本**：*完整版* 性能高，体积较大；*简化版* 体积小，功能受限；请根据项目需求自由选择。
 
@@ -49,28 +51,37 @@ function orientationHandler( mql ) {
 
 ## API
 
+### Methods
+
 使用方式与标准的 `window.matchMedia` 一致，请参考 [MDN上的文档](https://developer.mozilla.org/en-US/docs/Web/API/Window.matchMedia)。
 
-### matchMedia( mediaQueryString )
+#### matchMedia( mediaQueryString )
 
 返回一个 `MediaQueryList` 对象（在不支持原生 `matchMedia` 的设备返回模拟的对象）。
 
-### `<boolean>` MediaQueryList.matches
+* **mediaQueryString** `{sting}`
+* _return_ `{MediaQueryList}` 
+
+#### MediaQueryList.matches
 
 media query 规则匹配则返回 `true`，否则为 `false`。
 
-### `<string>` MediaQueryList.media
+* _return_ `{boolean}` 
+
+#### MediaQueryList.media
 
 meida query 的值。
+
+* _return_ `{string}` 
 
 ### MediaQueryList.addListener( listener )
 
 `MediaQueryList` 对象 **添加** 监听函数的方法。
 
+* **listener** `{Function}`
+
 ### MediaQueryList.removeListener( listener )
 
 `MediaQueryList` 对象 **移除** 监听函数的方法。
 
-===
-
-[![Saber](https://f.cloud.github.com/assets/157338/1485433/aeb5c72a-4714-11e3-87ae-7ef8ae66e605.png)](http://ecomfe.github.io/saber/)
+* **listener** `{Function}`
