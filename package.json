@@ -1,6 +1,6 @@
 {
     "name": "saber-matchmedia",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "description": "移动端 matchMedia 支持。",
     "main": "main",
     "maintainers": [
