@@ -8,23 +8,23 @@
 
 /**
  * MediaMatch v.2.0.2
- * 
+ *
  * Testing css media queries in Javascript.
  * Authors & copyright (c) 2013: WebLinc, David Knight.
  */
 
-define(function( require ) {
+define(function (require) {
 
     // native matchMedia is buggy in MIUI (Android 4.1.2 version) browsers,
     // except Androd Chrome.
-    var isAndroid = navigator.userAgent.indexOf( 'Android' ) > 0;
-    var isChrome = /Chrome\/[0-9]+/.test( navigator.userAgent );
+    var isAndroid = navigator.userAgent.indexOf('Android') > 0;
+    var isChrome = /Chrome\/[0-9]+/.test(navigator.userAgent);
 
-    if ( window.matchMedia && !( isAndroid && !isChrome ) ) {
+    if (window.matchMedia && !(isAndroid && !isChrome)) {
         return window.matchMedia;
     }
 
-    var matchMedia = (function( win ) {
+    var matchMedia = (function (win) {
         var _doc = win.document;
         var _viewport = _doc.documentElement;
         var _queries = [];
@@ -46,19 +46,19 @@ define(function( require ) {
         // (width: 300px)
         // (width)
         // (orientation: portrait|landscape)
-        var _mediaExpr = /^\s*\(\s*(-[a-z]+-)?(min-|max-)?([a-z\-]+)\s*(:?\s*([0-9]+(\.[0-9]+)?|portrait|landscape)(px|em|dppx|dpcm|rem|%|in|cm|mm|ex|pt|pc|\/([0-9]+(\.[0-9]+)?))?)?\s*\)\s*$/;
+        var _mediaExpr = /^\s*\(\s*(-[a-z]+-)?(min-|max-)?([a-z\-]+)\s*(:?\s*([0-9]+(\.[0-9]+)?|portrait|landscape)(px|em|dppx|dpcm|rem|%|in|cm|mm|ex|pt|pc|\/([0-9]+(\.[0-9]+)?))?)?\s*\)\s*$/; // jshint ignore: line
 
         // Helper methods
-        
+
         /**
          * _matches
-         * 
+         *
          * @private
          */
-        var _matches = function( media ) {
+        var _matches = function (media) {
             // screen and (min-width: 400px), screen and (max-width: 500px)
-            var mql = ( media.indexOf( ',' ) !== -1 && media.split( ',' ) )
-                || [ media ];
+            var mql = (media.indexOf(',') !== -1 && media.split(','))
+                || [media];
             var mqIndex = mql.length - 1;
             var mqLength = mqIndex;
             var mq = null;
@@ -85,108 +85,108 @@ define(function( require ) {
 
             var match = false;
 
-            if ( media === '' ) {
+            if (media === '') {
                 return true;
             }
 
             do {
-                mq = mql[ mqLength - mqIndex ];
+                mq = mql[mqLength - mqIndex];
                 negate = false;
-                negateType = mq.match( _typeExpr );
+                negateType = mq.match(_typeExpr);
 
-                if ( negateType ) {
-                    negateTypeFound = negateType[ 0 ];
+                if (negateType) {
+                    negateTypeFound = negateType[0];
                     negateTypeIndex = negateType.index;
                 }
 
                 if (
                     !negateType
-                    || ( ( mq.substring( 0, negateTypeIndex )
-                            .indexOf( '(' ) === -1 )
-                        && ( negateTypeIndex
-                            || ( !negateType[ 3 ]
-                                && negateTypeFound !== negateType.input )
-                        )
-                    )
-                ) {
+                    || ((mq.substring(0, negateTypeIndex)
+                            .indexOf('(') === -1)
+                        && (negateTypeIndex
+                            || (!negateType[3]
+                                && negateTypeFound !== negateType.input)
+                       )
+                   )
+               ) {
                     match = false;
                     continue;
                 }
 
                 exprListStr = mq;
 
-                negate = negateType[ 1 ] === 'not';
+                negate = negateType[1] === 'not';
 
-                if ( !negateTypeIndex ) {
-                    type = negateType[ 2 ];
-                    exprListStr = mq.substring( negateTypeFound.length );
+                if (!negateTypeIndex) {
+                    type = negateType[2];
+                    exprListStr = mq.substring(negateTypeFound.length);
                 }
 
                 // Test media type
                 // Test type against this device or if 'all' or empty ''
                 match = type === _type || type === 'all' || type === '';
 
-                exprList = ( exprListStr.indexOf( ' and ' ) !== -1
-                        && exprListStr.split( ' and ' )
-                    )
-                    || [ exprListStr ];
+                exprList = (exprListStr.indexOf(' and ') !== -1
+                        && exprListStr.split(' and ')
+                   )
+                    || [exprListStr];
 
                 exprIndex = exprList.length - 1;
                 exprLength = exprIndex;
 
-                if ( match && exprIndex >= 0 && exprListStr !== '' ) {
+                if (match && exprIndex >= 0 && exprListStr !== '') {
                     do {
                         expr = exprList[exprIndex].match(_mediaExpr);
 
-                        if ( !expr || !_features[ expr[ 3 ] ] ) {
+                        if (!expr || !_features[expr[3]]) {
                             match = false;
                             break;
                         }
 
-                        prefix = expr[ 2 ];
-                        length = expr[ 5 ];
+                        prefix = expr[2];
+                        length = expr[5];
                         value = length;
-                        unit = expr[ 7 ];
-                        feature = _features[ expr[ 3 ] ];
+                        unit = expr[7];
+                        feature = _features[expr[3]];
 
                         // Convert unit types
-                        if ( unit ) {
-                            if ( unit === 'px' ) {
+                        if (unit) {
+                            if (unit === 'px') {
                                 // If unit is px
-                                value = Number( length );
+                                value = Number(length);
                             }
-                            else if ( unit === 'em' || unit === 'rem' ) {
+                            else if (unit === 'em' || unit === 'rem') {
                                 // Convert relative length unit to pixels
                                 // Assumed base font size is 16px
                                 value = 16 * length;
                             }
-                            else if ( expr[ 8 ] ) {
+                            else if (expr[8]) {
                                 // Convert aspect ratio to decimal
-                                value = ( length / expr[ 8 ] ).toFixed( 2 );
+                                value = (length / expr[8]).toFixed(2);
                             }
-                            else if ( unit === 'dppx' ) {
+                            else if (unit === 'dppx') {
                                 // Convert resolution dppx unit to pixels
                                 value = length * 96;
                             }
-                            else if ( unit === 'dpcm' ) {
+                            else if (unit === 'dpcm') {
                                 // Convert resolution dpcm unit to pixels
                                 value = length * 0.3937;
                             }
                             else {
                                 // default
-                                value = Number( length );
+                                value = Number(length);
                             }
                         }
 
                         // Test for prefix min or max
                         // Test value against feature
-                        if ( prefix === 'min-' && value ) {
+                        if (prefix === 'min-' && value) {
                             match = feature >= value;
                         }
-                        else if ( prefix === 'max-' && value ) {
+                        else if (prefix === 'max-' && value) {
                             match = feature <= value;
                         }
-                        else if ( value ) {
+                        else if (value) {
                             match = feature === value;
                         }
                         else {
@@ -195,30 +195,30 @@ define(function( require ) {
 
                         // If 'match' is false, break loop
                         // Continue main loop through query list
-                        if ( !match ) {
+                        if (!match) {
                             break;
                         }
                     }
-                    while ( exprIndex-- );
+                    while (exprIndex--);
                 }
 
                 // If match is true, break loop
                 // Once matched, no need to check other queries
-                if ( match ) {
+                if (match) {
                     break;
                 }
             }
-            while ( mqIndex-- );
+            while (mqIndex--);
 
             return negate ? !match : match;
         };
 
         /**
          * _setFeature
-         * 
+         *
          * @private
          */
-        var _setFeature = function() {
+        var _setFeature = function () {
             // Sets properties of '_features' that change on resize
             // and/or orientation.
             var w = win.innerWidth || _viewport.clientWidth;
@@ -230,14 +230,14 @@ define(function( require ) {
 
             _features.width = w;
             _features.height = h;
-            _features['aspect-ratio'] = ( w / h ).toFixed( 2 );
+            _features['aspect-ratio'] = (w / h).toFixed(2);
             _features['device-width'] = dw;
             _features['device-height'] = dh;
-            _features['device-aspect-ratio'] = ( dw / dh ).toFixed( 2 );
+            _features['device-aspect-ratio'] = (dw / dh).toFixed(2);
             _features.color = c;
-            _features['color-index'] = Math.pow( 2, c );
-            _features.orientation = ( h >= w ? 'portrait' : 'landscape' );
-            _features.resolution = ( x && x * 96 )
+            _features['color-index'] = Math.pow(2, c);
+            _features.orientation = (h >= w ? 'portrait' : 'landscape');
+            _features.resolution = (x && x * 96)
                 || win.screen.deviceXDPI
                 || 96;
             _features['device-pixel-ratio'] = x || 1;
@@ -245,61 +245,56 @@ define(function( require ) {
 
         /**
          * _watch
-         * 
+         *
          * @private
          */
-        var _watch = function() {
-            clearTimeout( _timer );
+        var _watch = function () {
+            clearTimeout(_timer);
 
-            _timer = setTimeout( function() {
+            _timer = setTimeout(function () {
                 var query = null;
                 var qIndex = _queryID - 1;
                 var qLength = qIndex;
                 var match = false;
 
-                if ( qIndex >= 0 ) {
+                if (qIndex >= 0) {
                     _setFeature();
 
                     do {
-                        query = _queries[ qLength - qIndex ];
+                        query = _queries[qLength - qIndex];
 
-                        if ( query ) {
-                            match = _matches( query.mql.media );
+                        if (query) {
+                            match = _matches(query.mql.media);
 
-                            if ( ( match && !query.mql.matches )
-                                || ( !match && query.mql.matches )
+                            if ((match && !query.mql.matches)
+                                || (!match && query.mql.matches)
                             ) {
                                 query.mql.matches = match;
 
-                                if ( query.listeners ) {
-                                    for ( var i = 0,
-                                            il = query.listeners.length;
-                                        i < il;
-                                        i++
-                                    ) {
-                                        if ( query.listeners[ i ] ) {
-                                            query.listeners[ i ]
-                                                .call( win, query.mql );
+                                if (query.listeners) {
+                                    for (var i = 0, il = query.listeners.length; i < il; i++) {
+                                        if (query.listeners[i]) { // jshint ignore: line
+                                            query.listeners[i].call(win, query.mql);
                                         }
                                     }
                                 }
                             }
                         }
                     }
-                    while( qIndex-- );
+                    while (qIndex--);
                 }
 
-            }, 10 );
+            }, 10);
         };
 
         /**
          * _init
-         * 
+         *
          * @private
          */
-        var _init = function() {
-            var head = _doc.getElementsByTagName( 'head' )[ 0 ];
-            var style = _doc.createElement( 'style' );
+        var _init = function () {
+            var head = _doc.getElementsByTagName('head')[0];
+            var style = _doc.createElement('style');
             var info = null;
             var typeList = [
                 'screen',
@@ -311,7 +306,7 @@ define(function( require ) {
                 'braille',
                 'embossed',
                 'tty'
-            ];
+           ];
             var typeIndex = 0;
             var typeLength = typeList.length;
             var cssText = '#mediamatchjs { position: relative; z-index: 0; }';
@@ -323,14 +318,14 @@ define(function( require ) {
             style.type = 'text/css';
             style.id = 'mediamatchjs';
 
-            head.appendChild( style );
+            head.appendChild(style);
 
             // Must be placed after style is inserted into the DOM for IE
-            info = ( win.getComputedStyle && win.getComputedStyle( style ) )
+            info = (win.getComputedStyle && win.getComputedStyle(style))
                 || style.currentStyle;
 
             // Create media blocks to test for media type
-            for ( ; typeIndex < typeLength; typeIndex++ ) {
+            for (; typeIndex < typeLength; typeIndex++) {
                 cssText += '@media '
                     + typeList[typeIndex]
                     + ' { #mediamatchjs { position: relative; z-index: '
@@ -339,7 +334,7 @@ define(function( require ) {
             }
 
             // Add rules to style element
-            if ( style.styleSheet ) {
+            if (style.styleSheet) {
                 style.styleSheet.cssText = cssText;
             }
             else {
@@ -347,15 +342,15 @@ define(function( require ) {
             }
 
             // Get media type
-            _type = typeList[ ( info.zIndex * 1 ) || 0 ];
+            _type = typeList[(info.zIndex * 1) || 0];
 
-            head.removeChild( style );
+            head.removeChild(style);
 
             _setFeature();
 
             // Set up listeners
-            addEvent( eventPrefix + 'resize', _watch );
-            addEvent( eventPrefix + 'orientationchange', _watch );
+            addEvent(eventPrefix + 'resize', _watch);
+            addEvent(eventPrefix + 'orientationchange', _watch);
         };
 
         _init();
@@ -364,41 +359,41 @@ define(function( require ) {
          * A list of parsed media queries,
          * ex. screen and (max-width: 400px), screen and (max-width: 800px)
          */
-        return function ( media ) {
+        return function (media) {
             var id = _queryID;
             var mql = {
                 matches: false,
                 media: media,
-                addListener: function addListener( listener ) {
-                    _queries[ id ].listeners
-                        || ( _queries[ id ].listeners = [] );
-                    listener && _queries[ id ].listeners.push( listener );
+                addListener: function addListener(listener) {
+                    _queries[id].listeners
+                        || (_queries[id].listeners = []);
+                    listener && _queries[id].listeners.push(listener);
                 },
-                removeListener: function removeListener( listener ) {
+                removeListener: function removeListener(listener) {
                     var query = _queries[id];
                     var i = 0;
                     var il = 0;
 
-                    if ( !query ) {
+                    if (!query) {
                         return;
                     }
 
                     il = query.listeners.length;
 
-                    for ( ; i < il; i++ ) {
-                        if ( query.listeners[ i ] === listener ) {
-                            query.listeners.splice( i, 1 );
+                    for (; i < il; i++) {
+                        if (query.listeners[i] === listener) {
+                            query.listeners.splice(i, 1);
                         }
                     }
                 }
             };
 
-            if ( media === '' ) {
+            if (media === '') {
                 mql.matches = true;
                 return mql;
             }
 
-            mql.matches = _matches( media );
+            mql.matches = _matches(media);
 
             _queryID = _queries.push({
                 mql: mql,
@@ -408,7 +403,7 @@ define(function( require ) {
             return mql;
         };
 
-    })( window );
+    })(window);
 
     return matchMedia;
 
