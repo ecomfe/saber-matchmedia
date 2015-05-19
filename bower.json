@@ -1,0 +1,23 @@
+{
+  "name": "saber-matchmedia",
+  "version": "1.0.0",
+  "description": "移动端 matchMedia 支持。",
+  "main": "main",
+  "maintainers": [
+    {
+      "name": "firede",
+      "email": "firede@firede.us"
+    }
+  ],
+  "license": "BSD",
+  "repository": "git://github.com/ecomfe/saber-matchmedia.git",
+  "bugs": "https://github.com/ecomfe/saber-matchmedia/issues",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "doc",
+    "demo"
+  ]
+}
